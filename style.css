@@ -1,0 +1,67 @@
+@import url(http://fonts.googleapis.com/css?family=Raleway);
+
+body {
+  background-color: #1F2833;
+  font-family: Raleway, sans-serif;
+  color: #fff;
+  margin: 0;
+}
+
+.title-div {
+  margin: auto;
+  width: 50%;
+}
+
+#title {
+  text-align: center;
+  margin-top: 20%;
+  font-size: 60px;
+  color: #C5C6C7;
+}
+
+.form {
+  margin: auto;
+  margin-top: 5%;
+  width: 50%;
+}
+
+#content {
+  text-align: center;
+}
+
+input {
+  text-align: center;
+  border: none;
+  text-decoration: none;
+  width: 300px;
+  height: 40px;
+  padding: 0;
+  border-radius: 20px 0px 0px 20px;
+}
+
+button {
+  background-color: #66FCF1;
+  border: none;
+  border-radius: 0px 20px 20px 0px;
+  width: 50px;
+  height: 40px;
+  padding: 0;
+}
+
+i {
+  color: #1F2833;
+}
+
+input:focus,
+select:focus,
+textarea:focus,
+button:focus {
+    outline: none;
+}
+
+#results-table {
+  margin-top: 3%;  
+  margin-left:auto;
+  margin-right:auto;
+  text-align: center;
+}
