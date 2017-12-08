@@ -31,16 +31,35 @@ function getResults(searchStr) {
     xhrFields: {
         withCredentials: true
     }});
-request.done(function(data){
-    populateTable(data);
-});
+  request.done(function(data){
+      populateTable(data);
+  });
+}
 
-
+function getImage(data, i) {
+  $.get("http://www.omdbapi.com/?t="+data[i]+"&apikey=59251d51", function(json, status){
+        imageURL = json.Poster;
+        var id = "#poster" + i;
+        
+        $(id).css('background-image', 'url('+imageURL+')');
+        $(id).css('width', '300px');
+        $(id).css('height', '300px');
+        $(id).css('overflow', 'hidden');
+        $(id).css('background-position', 'center');
+        $(id).css('background-repeat', 'no-repeat');
+        $(id).css('border-radius', '20px');
+        $(id).css('margin', 'auto');
+    });
 }
 
 function populateTable(data) {
+  var imageURL="";
+  $("#results-table tr").remove();
+
   for (i = 0; i < data.length; i++) {
-    $("#results-table").append("<tr><td>" + data[i] + "</td></tr>");
+    $("#results-table").append("<tr><td><div id=\"poster"+ i +"\"></div></td></tr><tr><td id=\"stream-title\">" + data[i] + "</td></tr>");
+
+    getImage(data, i);
   }
 }
 
