@@ -29,7 +29,7 @@ body {
   text-align: center;
 }
 
-input {
+.input {
   text-align: center;
   border: none;
   text-decoration: none;
@@ -78,4 +78,14 @@ button:focus {
 
 #stream-title {
   font-size: 25px;
+}
+
+.providers {
+  margin-top: 5%;
+  margin-right: 20px;
+}
+
+#select {
+  margin-top: 5%;
+  color: #C5C6C7;
 }
