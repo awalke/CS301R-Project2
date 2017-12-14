@@ -80,6 +80,10 @@ button:focus {
   font-size: 25px;
 }
 
+#service {
+  padding-bottom: 50px;
+}
+
 .providers {
   margin-top: 5%;
   margin-right: 20px;

@@ -1,5 +1,15 @@
 var searchStr = "";
 
+function checkClick() {
+  searchStr = $('.input').val();
+  var visibility = $('.title-div').is(':visible');
+
+  if (searchStr != "" && !visibility) {
+    getResults(searchStr);
+  }
+
+}
+
 function expand() {
   console.log(searchStr);
   $(".search").toggleClass("close");
@@ -24,23 +34,68 @@ function search(event) {
 }
 
 function getResults(searchStr) {
-  var request = $.ajax({
+  $("#results-table tr").remove();
+
+  combined = {};
+
+  if ($('#netflixCheck').is(":checked")) {
+    var requestNetflix = $.ajax({
+      type: 'GET',
+      url: "http://ec2-54-87-189-232.compute-1.amazonaws.com:8080/netflix?searchString=" + searchStr,
+      dataType: "json",
+      xhrFields: {
+          withCredentials: true
+      }});
+    requestNetflix.done(function(data){
+      for (i in data) {
+        combined[data[i]] = "Netflix";
+      }
+    });
+
+
+
+      $.when(requestNetflix)
+        .done(function () {
+          if ($('#huluCheck').is(":checked")) {
+            huluRequest(combined);
+          } else {
+            populateTable(combined);
+          }
+        });
+  } else if ($('#huluCheck').is(":checked")) {
+    huluRequest(combined)
+  }
+}
+
+function huluRequest(combined) {
+  var requestHulu = $.ajax({
     type: 'GET',
-    url: "http://ec2-54-87-189-232.compute-1.amazonaws.com:8080/netflix?searchString=" + searchStr,
+    url: "http://ec2-54-87-189-232.compute-1.amazonaws.com:8080/hulu?searchString=" + searchStr,
     dataType: "json",
     xhrFields: {
         withCredentials: true
     }});
-  request.done(function(data){
-      populateTable(data);
-  });
+
+    requestHulu.done(function(data){
+      h = {};
+      for (i in data) {
+        h[data[i]] = "Hulu";
+      }
+
+      combined = Object.assign({}, combined, h);
+        populateTable(combined);
+    });
 }
 
-function getImage(data, i) {
-  $.get("http://www.omdbapi.com/?t="+data[i]+"&apikey=59251d51", function(json, status){
+function getImage(i, count) {
+  $.get("http://www.omdbapi.com/?t="+i+"&apikey=59251d51", function(json, status){
         imageURL = json.Poster;
-        var id = "#poster" + i;
-        
+        var id = "#poster" + count;
+
+        if (typeof imageURL == 'undefined') {
+          imageURL = "default.png"
+        }
+
         $(id).css('background-image', 'url('+imageURL+')');
         $(id).css('width', '300px');
         $(id).css('height', '300px');
@@ -54,13 +109,12 @@ function getImage(data, i) {
 
 function populateTable(data) {
   var imageURL="";
-  $("#results-table tr").remove();
+  count = 0;
 
-  for (i = 0; i < data.length; i++) {
-    $("#results-table").append("<tr><td><div id=\"poster"+ i +"\"></div></td></tr><tr><td id=\"stream-title\">" + data[i] + "</td></tr>");
-
-    getImage(data, i);
+  for (i in data) {
+  var value = data[i];
+    $("#results-table").append("<tr><td><div id=\"poster"+ count +"\"></div></td></tr><tr><td id=\"stream-title\">" + i + "</td></tr><tr><td></td></tr></tr><tr><td id=\"service\">"+value+"</td></tr>");
+    getImage(i, count);
+    count += 1;
   }
 }
-
-// video-preload-title-label -> title of netflix item

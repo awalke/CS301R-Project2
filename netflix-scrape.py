@@ -1,20 +1,53 @@
-import requests
-import bs4
+# import requests
+# import bs4
+#
+# response = requests.get('https://www.hulu.com/start/content')
+# soup = bs4.BeautifulSoup(response.text, "html.parser")
+# titles = soup.find_all("table > tbody > tr > td")
+#
+# print(titles)
+#
+# thefile = open('hulu-titles.txt', 'w')
+#
+# # print tv_titles[14].text
+#
+# for title in titles:
+#     thefile.write("%s\n" % title.text.encode('utf8'))
 
-response = requests.get('https://www.finder.com/netflix-tv-shows')
-soup = bs4.BeautifulSoup(response.text, "html.parser")
-tv_titles = soup.select('tbody > tr > td > div > b')
+from selenium import webdriver
+from bs4 import BeautifulSoup
+import time
 
-response = requests.get('https://www.finder.com/netflix-movies')
-soup = bs4.BeautifulSoup(response.text, "html.parser")
-movie_titles = soup.select('tbody > tr > td > b')
+driver = webdriver.Chrome()
+driver.get("https://www.hulu.com/start/content")
+time.sleep(3)
+htmlSource = driver.page_source
 
-thefile = open('netflix-titles.txt', 'w')
+count = 0
 
-# print tv_titles[14].text
+thefile = open('hulu-titles.txt', 'w')
 
-for title in tv_titles:
-    thefile.write("%s\n" % title.text.encode('utf8'))
+while count < 141:
+    soup = BeautifulSoup(htmlSource, "html.parser")
+    ids = soup.select("img")
 
-for title in movie_titles:
-    thefile.write("%s\n" % title.text.encode('utf8'))
+    start = False
+
+    for i in ids:
+        if i.get('alt', '').encode('utf8') == "Loading-animated-circle":
+            start = False
+
+        if start:
+            thefile.write("%s\n" % i.get('alt', '').encode('utf8'))
+
+        if i.get('alt', '').encode('utf8') == "Go to the next page":
+            start = True
+
+
+    button = driver.find_element_by_id('sosodssfs')
+    button.click()
+
+    time.sleep(3)
+
+    htmlSource = driver.page_source
+    count += 1
